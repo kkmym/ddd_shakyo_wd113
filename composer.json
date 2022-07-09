@@ -1,0 +1,17 @@
+{
+    "name": "kentarokamiyama/20220706_ddd_shakyo",
+    "autoload": {
+        "psr-4": {
+            "Shakyo\\" : "src/Shakyo/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kkmym",
+            "email": "kentarokamiyama@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
