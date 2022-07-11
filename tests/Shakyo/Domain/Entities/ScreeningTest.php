@@ -15,6 +15,7 @@ class ScreeningTest extends TestCase
         $this->assertEquals($emailAddress, $screening->getApplicantEmailAddress());
         $this->assertEquals(ScreeningStatus::NotApplied, $screening->getScreeningStatus());
         $this->assertNull($screening->getApplyDateTime());
+        $this->assertEquals(0, count($screening->getInterviews()));
     }
 
     public function testNewInstanceApply()
@@ -29,5 +30,23 @@ class ScreeningTest extends TestCase
         $now = new DateTime();
         $format = 'YmdHi'; // もしインスタンス生成とassertメソッド実行が 1秒以上ズレても比較成功するよう、分までで比較
         $this->assertEquals($now->format($format), $screening->getApplyDateTime()->format($format));
+    }
+
+    public function testAddInterviewRaiseException()
+    {
+        $this->expectException(Exception::class);
+
+        $emailAddress = 'test@example.com';
+        $screening = Screening::startFromPreInterview($emailAddress);
+        $screening->addNextInterview(new DateTime('2022-07-25 13:30:00'));
+    }
+
+    public function testAddInterview()
+    {
+        $emailAddress = 'test@example.com';
+        $screening = Screening::startFromApply($emailAddress);
+
+        $screening->addNextInterview(new DateTime('2022-07-25 13:30:00'));
+        $this->assertEquals(1, count($screening->getInterviews()));
     }
 }
