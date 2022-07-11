@@ -12,7 +12,7 @@ class ScreeningTest extends TestCase
         $screening = Screening::startFromPreInterview($emailAddress);
 
         $this->assertInstanceOf(Screening::class, $screening);
-        $this->assertEquals($emailAddress, $screening->getApplicantEmailAddress());
+        $this->assertEquals($emailAddress, $screening->getApplicantEmailAddress()->getValue());
         $this->assertEquals(ScreeningStatus::NotApplied, $screening->getScreeningStatus());
         $this->assertNull($screening->getApplyDateTime());
         $this->assertEquals(0, count($screening->getInterviews()));
@@ -24,7 +24,7 @@ class ScreeningTest extends TestCase
         $screening = Screening::startFromApply($emailAddress);
 
         $this->assertInstanceOf(Screening::class, $screening);
-        $this->assertEquals($emailAddress, $screening->getApplicantEmailAddress());
+        $this->assertEquals($emailAddress, $screening->getApplicantEmailAddress()->getValue());
         $this->assertEquals(ScreeningStatus::Interview, $screening->getScreeningStatus());
 
         $now = new DateTime();
@@ -34,10 +34,11 @@ class ScreeningTest extends TestCase
 
     public function testAddInterviewRaiseException()
     {
-        $this->expectException(Exception::class);
 
         $emailAddress = 'test@example.com';
         $screening = Screening::startFromPreInterview($emailAddress);
+
+        $this->expectException(Exception::class);
         $screening->addNextInterview(new DateTime('2022-07-25 13:30:00'));
     }
 

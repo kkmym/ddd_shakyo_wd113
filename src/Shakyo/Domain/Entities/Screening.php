@@ -4,7 +4,7 @@ namespace Shakyo\Domain\Entities;
 
 use DateTime;
 use Exception;
-use LogicException;
+use Shakyo\Domain\ValueObjects\EmailAddress;
 use Shakyo\Domain\ValueObjects\ScreeningStatus;
 
 class Screening
@@ -12,7 +12,7 @@ class Screening
     private string $screeningId;
     private ?DateTime $applyDateTime;
     private ScreeningStatus $status;
-    private string $applicantEmailAddress;
+    private EmailAddress $applicantEmailAddress;
     private array $interviews;
 
     private function __construct()
@@ -47,17 +47,12 @@ class Screening
 
     protected static function createNewInstance(string $applicantEmailAddress): static
     {
-        // Validation
-        if (!static::validateEmailAddress($applicantEmailAddress)) {
-            throw new Exception('Eメールアドレスがおかしい');
-        }
-
         $instance = new static();
         // 各プロパティに値をセット
         // ID
         $instance->screeningId = uniqid();
         // メールアドレス
-        $instance->applicantEmailAddress = $applicantEmailAddress;
+        $instance->applicantEmailAddress = new EmailAddress($applicantEmailAddress);
         // 面接
         $instance->interviews = [];
         // 応募日時とステータスは、"面談"スタートか"応募"スタートかでちがうので、個々の生成メソッドでセットする
@@ -80,7 +75,7 @@ class Screening
         return $this->status;
     }
 
-    public function getApplicantEmailAddress(): string
+    public function getApplicantEmailAddress(): EmailAddress
     {
         return $this->applicantEmailAddress;
     }
@@ -88,11 +83,6 @@ class Screening
     public function getInterviews(): array
     {
         return $this->interviews;
-    }
-
-    private static function validateEmailAddress($value): bool
-    {
-        return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 
     public function addNextInterview(DateTime $nextInterviewDateTime): void
