@@ -28,7 +28,7 @@ class ScreeningTest extends TestCase
         $this->assertEquals(ScreeningStatus::Interview, $screening->getScreeningStatus());
 
         $now = new DateTime();
-        $format = 'YmdHi'; // もしインスタンス生成とassertメソッド実行が 1秒以上ズレても比較成功するよう、分までで比較
+        $format = 'YmdHis';
         $this->assertEquals($now->format($format), $screening->getApplyDateTime()->format($format));
     }
 
