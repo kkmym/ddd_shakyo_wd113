@@ -87,8 +87,8 @@ class Screening
 
     public function addNextInterview(DateTime $nextInterviewDateTime): void
     {
-        if ($this->status != ScreeningStatus::Interview) {
-            throw new Exception('ステータスが選考中ではないので、面接は設定できない');
+        if (!$this->status->canAddInterview()) {
+            throw new Exception('面接設定できないステータス');
         }
 
         /**  @todo 単なるcountではなく、配列内の最大値を取得する */
