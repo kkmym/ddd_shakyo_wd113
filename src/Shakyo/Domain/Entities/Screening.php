@@ -5,6 +5,7 @@ namespace Shakyo\Domain\Entities;
 use DateTime;
 use Exception;
 use Shakyo\Domain\ValueObjects\EmailAddress;
+use Shakyo\Domain\ValueObjects\Interviews;
 use Shakyo\Domain\ValueObjects\ScreeningStatus;
 
 class Screening
@@ -13,7 +14,7 @@ class Screening
     private ?DateTime $applyDateTime;
     private ScreeningStatus $status;
     private EmailAddress $applicantEmailAddress;
-    private array $interviews;
+    private Interviews $interviews;
 
     private function __construct()
     {
@@ -54,7 +55,7 @@ class Screening
         // メールアドレス
         $instance->applicantEmailAddress = new EmailAddress($applicantEmailAddress);
         // 面接
-        $instance->interviews = [];
+        $instance->interviews = new Interviews();
         // 応募日時とステータスは、"面談"スタートか"応募"スタートかでちがうので、個々の生成メソッドでセットする
 
         return $instance;
@@ -80,7 +81,7 @@ class Screening
         return $this->applicantEmailAddress;
     }
 
-    public function getInterviews(): array
+    public function getInterviews(): Interviews
     {
         return $this->interviews;
     }
@@ -91,9 +92,6 @@ class Screening
             throw new Exception('面接設定できないステータス');
         }
 
-        /**  @todo 単なるcountではなく、配列内の最大値を取得する */
-        $nextInterviewNumber = count($this->interviews) + 1;
-        $nextInterview = Interview::createNewInstance($nextInterviewNumber, $nextInterviewDateTime);
-        $this->interviews[] = $nextInterview;
+        $this->interviews->addNextInterview($nextInterviewDateTime);
     }
 }

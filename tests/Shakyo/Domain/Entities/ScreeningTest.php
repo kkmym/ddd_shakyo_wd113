@@ -15,7 +15,7 @@ class ScreeningTest extends TestCase
         $this->assertEquals($emailAddress, $screening->getApplicantEmailAddress()->getValue());
         $this->assertEquals(ScreeningStatus::NotApplied, $screening->getScreeningStatus());
         $this->assertNull($screening->getApplyDateTime());
-        $this->assertEquals(0, count($screening->getInterviews()));
+        $this->assertEquals(0, count($screening->getInterviews()->all()));
     }
 
     public function testNewInstanceApply()
@@ -48,6 +48,6 @@ class ScreeningTest extends TestCase
         $screening = Screening::startFromApply($emailAddress);
 
         $screening->addNextInterview(new DateTime('2022-07-25 13:30:00'));
-        $this->assertEquals(1, count($screening->getInterviews()));
+        $this->assertEquals(1, count($screening->getInterviews()->all()));
     }
 }
